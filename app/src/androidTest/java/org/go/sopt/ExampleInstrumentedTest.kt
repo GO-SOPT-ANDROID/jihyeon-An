@@ -1,4 +1,4 @@
-package com.example.seminar1
+package org.go.sopt
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
