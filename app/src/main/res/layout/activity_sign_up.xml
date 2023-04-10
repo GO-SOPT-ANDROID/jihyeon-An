@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    tools:context=".SignUpActivity">
 
     <TextView
         android:id="@+id/titleTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome to GO Android!"
+        android:text="SIGN UP"
         android:textColor="@color/black"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -29,7 +29,7 @@
         android:text="ID"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
         app:layout_constraintTop_toBottomOf="@id/titleTv"/>
@@ -39,6 +39,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="아이디를 입력하세요."
+        android:maxLength="10"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
@@ -51,7 +52,7 @@
         android:text="PW"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
         app:layout_constraintTop_toBottomOf="@id/idEditTv"/>
@@ -61,22 +62,56 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="비밀번호를 입력하세요."
+        android:maxLength="12"
         android:inputType="textPassword"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
         app:layout_constraintTop_toBottomOf="@id/pwTv"/>
 
-    <Button
-        android:id="@+id/loginBtn"
+    <TextView
+        android:id="@+id/nameTv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="LOGIN"
-        android:layout_marginTop="30dp"
+        android:text="이름"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
-        app:layout_constraintTop_toBottomOf="@id/pwEditTv"
-        />
+        app:layout_constraintTop_toBottomOf="@id/pwEditTv"/>
+
+    <EditText
+        android:id="@+id/nameEditTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="비밀번호를 입력하세요."
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/titleTv"
+        app:layout_constraintEnd_toEndOf="@id/titleTv"
+        app:layout_constraintTop_toBottomOf="@id/nameTv"/>
+
+    <TextView
+        android:id="@+id/talentTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="PW"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@id/titleTv"
+        app:layout_constraintEnd_toEndOf="@id/titleTv"
+        app:layout_constraintTop_toBottomOf="@id/nameEditTv"/>
+
+    <EditText
+        android:id="@+id/talentEditTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="비밀번호를 입력하세요."
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/titleTv"
+        app:layout_constraintEnd_toEndOf="@id/titleTv"
+        app:layout_constraintTop_toBottomOf="@id/talentTv"/>
 
     <Button
         android:id="@+id/signUpBtn"
@@ -86,7 +121,7 @@
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
-        app:layout_constraintTop_toBottomOf="@id/loginBtn"
+        app:layout_constraintTop_toBottomOf="@id/talentEditTv"
         />
 
 
