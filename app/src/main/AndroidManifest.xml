@@ -13,12 +13,15 @@
         tools:targetApi="31">
         <activity
             android:name="org.go.sopt.MyPageActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name="org.go.sopt.SignUpActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name="org.go.sopt.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

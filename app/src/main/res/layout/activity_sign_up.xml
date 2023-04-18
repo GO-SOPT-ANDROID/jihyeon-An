@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpActivity">
+    >
 
     <TextView
         android:id="@+id/titleTv"
@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:hint="아이디를 입력하세요."
         android:maxLength="10"
+        android:inputType="text"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
@@ -86,6 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="비밀번호를 입력하세요."
+        android:inputType="text"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
@@ -118,6 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="SIGN UP"
+        android:inputType="text"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/titleTv"
         app:layout_constraintEnd_toEndOf="@id/titleTv"
