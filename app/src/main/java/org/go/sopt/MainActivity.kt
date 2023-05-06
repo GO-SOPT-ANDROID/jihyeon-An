@@ -1,58 +1,51 @@
 package org.go.sopt
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
+import com.example.seminar1.R
 import com.example.seminar1.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.Snackbar
+import com.example.seminar1.databinding.FragmentHomeBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
-
-    private lateinit var getResult : ActivityResultLauncher<Intent>
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val id = binding.idEditTv
-        val pw = binding.pwEditTv
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fcv_main)
+        if (currentFragment == null) {
+            supportFragmentManager.beginTransaction().add(R.id.fcv_main, HomeFragment())
+                .commit()
+        }
 
-        getResult = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ){result ->
-            if(result.resultCode == RESULT_OK){
-                val getId = result.data?.getStringExtra("id") ?: ""
-                val getPw = result.data?.getStringExtra("pw") ?: ""
-                val getName = result.data?.getStringExtra("name") ?: ""
-                val getTalent = result.data?.getStringExtra("talent") ?: ""
+        binding.bnvMain.setOnItemSelectedListener { item ->
 
-                Snackbar.make(
-                    binding.root,
-                    "회원가입이 완료되었습니다.",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-
-                binding.loginBtn.setOnClickListener {
-                    if(id.text.toString() == getId && pw.text.toString() == getPw){
-                        val intent = Intent(this, MyPageActivity::class.java)
-                        intent.putExtra("name", getName)
-                        intent.putExtra("talent", getTalent)
-                        startActivity(intent)
-                        finish()
-                    }
+            when (item.itemId) {
+                R.id.home_menu -> {
+                    changeFragment(HomeFragment())
+                    return@setOnItemSelectedListener true
+                }
+                R.id.search_menu -> {
+                    changeFragment(SearchFragment())
+                    return@setOnItemSelectedListener true
+                }
+                else -> {
+                    changeFragment(GalleryFragment())
+                    return@setOnItemSelectedListener true
                 }
             }
         }
+    }
 
-        binding.signUpBtn.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            getResult.launch(intent)
-        }
-
+    private fun changeFragment(fragment: Fragment) {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fcv_main, fragment)
+            .commit()
     }
 }
