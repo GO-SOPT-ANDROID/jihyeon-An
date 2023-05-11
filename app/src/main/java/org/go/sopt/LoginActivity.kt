@@ -3,16 +3,21 @@ package org.go.sopt
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.seminar1.databinding.ActivityLoginBinding
 import com.google.android.material.snackbar.Snackbar
+import org.go.sopt.model.RequestSignInDto
+import org.go.sopt.model.ResponseSignInDto
 import org.go.sopt.network.SignUpService
+import retrofit2.Call
+import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityLoginBinding
-    private val signUpService = ServicePool.signUpService
+    private val signInService = ServicePool.signInService
 
     private lateinit var id : String
     private lateinit var pw :String
@@ -22,15 +27,55 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //회원가입 화면으로 이동
         binding.signUpBtn.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+
+        binding.loginBtn.setOnClickListener {
+
+            id = binding.idEditTv.text.toString()
+            pw = binding.pwEditTv.text.toString()
+
+            completeSignIn()
+        }
+    }
+    private fun completeSignIn() {
+        signInService.signIn(
+            RequestSignInDto(
+                id,
+                pw
+            )
+        ).enqueue(object: retrofit2.Callback<ResponseSignInDto> {
+            override fun onResponse(
+                call: Call<ResponseSignInDto>,
+                response: Response<ResponseSignInDto>
+            ) {
+                if (response.isSuccessful) {
+                    response.body()?.message?.let { makeSnackBar(it) } ?: "로그인에 성공하였습니다."
+                    Log.e("LoginActivity","로그인에 성공하였습니다")
+
+                } else {
+                    // 실패한 응답
+                    makeSnackBar("존재하지 않는 회원입니다.")
+                    Log.e("LoginActivity","40X")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseSignInDto>, t: Throwable) {
+                t.message?.let { makeSnackBar(it) } ?: "서버통신 실패(응답값 X)"
+                Log.e("LoginActivity",t.toString())
+            }
+        })
     }
 
-    private fun login(id : String, pw : String) {
-
+    private fun makeSnackBar(text: String) {
+        Snackbar.make(
+            binding.root,
+            text,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
-
 
 }
