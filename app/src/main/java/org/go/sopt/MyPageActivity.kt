@@ -1,4 +1,4 @@
-package com.example.seminar1
+package org.go.sopt
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
