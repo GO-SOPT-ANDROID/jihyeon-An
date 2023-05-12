@@ -55,7 +55,9 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.message?.let { makeSnackBar(it) } ?: "로그인에 성공하였습니다."
                     Log.e("LoginActivity","로그인에 성공하였습니다")
-                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        .putExtra("userName", response.body()?.data?.name)
+                        .putExtra("userSkill", response.body()?.data?.skill)
                     startActivity(intent)
                     finish()
 

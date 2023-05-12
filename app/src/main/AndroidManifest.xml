@@ -14,12 +14,7 @@
         android:theme="@style/Theme.Seminar1"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name="org.go.sopt.HomeActivity"
-            android:exported="false" />
-        <activity
-            android:name="org.go.sopt.MyPageActivity"
-            android:exported="false" />
+
         <activity
             android:name="org.go.sopt.SignUpActivity"
             android:exported="false" />
