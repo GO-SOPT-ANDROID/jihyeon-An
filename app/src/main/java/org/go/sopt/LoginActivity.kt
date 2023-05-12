@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
-
+        
         binding.loginBtn.setOnClickListener {
 
             id = binding.idEditTv.text.toString()
@@ -55,6 +55,9 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.message?.let { makeSnackBar(it) } ?: "로그인에 성공하였습니다."
                     Log.e("LoginActivity","로그인에 성공하였습니다")
+                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                    startActivity(intent)
+                    finish()
 
                 } else {
                     // 실패한 응답
