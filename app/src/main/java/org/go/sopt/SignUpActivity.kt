@@ -2,11 +2,10 @@ package org.go.sopt
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import com.example.seminar1.databinding.ActivitySignUpBinding
 import com.google.android.material.snackbar.Snackbar
 import org.go.sopt.model.RequestSignUpDto
@@ -87,7 +86,7 @@ class SignUpActivity : AppCompatActivity() {
                     if (!isFinishing) finish()
                 } else {
                     // 실패한 응답
-                    if(response.code() == 409) {
+                    if (response.code() == 409) {
                         Log.e("SignUpActivity", "중복된 아이디가 존재합니다.")
                         makeSnackBar("중복된 아이디가 존재합니다.")
                     }

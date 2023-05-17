@@ -1,4 +1,4 @@
-package org.example.seminar1
+package org.go.sopt
 
 import org.junit.Test
 

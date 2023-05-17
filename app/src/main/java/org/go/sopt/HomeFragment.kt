@@ -1,11 +1,10 @@
 package org.go.sopt
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.seminar1.R
+import androidx.fragment.app.Fragment
 import com.example.seminar1.databinding.FragmentHomeBinding
 import org.go.sopt.Adapter.ViewPagerAdapter
 import org.go.sopt.model.ResponseUser
@@ -25,11 +24,11 @@ private const val ARG_PARAM2 = "param2"
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-    private val binding : FragmentHomeBinding
+    private val binding: FragmentHomeBinding
         get() = requireNotNull(_binding) { "앗 ! _binding이 null이다 !" }
 
     private val reqresService = ReqresServicePool.reqresService
-    private  lateinit var viewPagerAdapter : ViewPagerAdapter
+    private lateinit var viewPagerAdapter: ViewPagerAdapter
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -50,7 +49,7 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewPagerAdapter = ViewPagerAdapter()
-        binding.viewPager.adapter=viewPagerAdapter
+        binding.viewPager.adapter = viewPagerAdapter
         initViewPager()
         return binding.root
     }
@@ -71,7 +70,7 @@ class HomeFragment : Fragment() {
             1
         ).enqueue(object : retrofit2.Callback<ResponseUser> {
             override fun onResponse(call: Call<ResponseUser>, response: Response<ResponseUser>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     response.body()?.data?.let {
                         viewPagerAdapter.setItemList(it)
                     }
@@ -84,6 +83,7 @@ class HomeFragment : Fragment() {
 
         })
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
