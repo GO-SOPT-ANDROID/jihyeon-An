@@ -3,49 +3,53 @@ package org.go.sopt
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import com.example.seminar1.R
 import com.example.seminar1.databinding.ActivityMainBinding
-import com.example.seminar1.databinding.FragmentHomeBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
+    private var userName: String? = ""
+    private var userSkill: String? = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fcv_main)
-        if (currentFragment == null) {
-            supportFragmentManager.beginTransaction().add(R.id.fcv_main, HomeFragment())
-                .commit()
-        }
+        userName = intent.getStringExtra("userName")
+        userSkill = intent.getStringExtra("userSkill")
+        val bundle: Bundle = Bundle()
+        bundle.putString("userName", userName)
+        bundle.putString("userSkill", userSkill)
 
-        binding.bnvMain.setOnItemSelectedListener { item ->
+        changeFragment(HomeFragment())
+
+        binding.mainBtn.setOnItemSelectedListener { item ->
 
             when (item.itemId) {
-                R.id.home_menu -> {
+                R.id.main_home -> {
                     changeFragment(HomeFragment())
-                    return@setOnItemSelectedListener true
                 }
-                R.id.search_menu -> {
-                    changeFragment(SearchFragment())
-                    return@setOnItemSelectedListener true
+                R.id.main_gallery -> {
+                    changeFragment(GalleryFragment())
+                }
+                R.id.main_my_page -> {
+                    val fragmentMyPage = MyPageFragment()
+                    fragmentMyPage.arguments = bundle
+                    changeFragment(fragmentMyPage)
                 }
                 else -> {
-                    changeFragment(GalleryFragment())
-                    return@setOnItemSelectedListener true
+                    changeFragment(HomeFragment())
                 }
             }
+            true
         }
     }
 
     private fun changeFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fcv_main, fragment)
+            .replace(R.id.main_fragment_container, fragment)
             .commit()
     }
 }
