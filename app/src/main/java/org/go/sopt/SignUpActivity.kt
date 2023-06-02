@@ -6,100 +6,79 @@ import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 import com.example.seminar1.databinding.ActivitySignUpBinding
 import com.google.android.material.snackbar.Snackbar
 import org.go.sopt.model.RequestSignUpDto
 import org.go.sopt.model.ResponseSignUpDto
+import org.go.sopt.viewmodel.SignUpViewModel
 import retrofit2.Call
 import retrofit2.Response
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
-    private val signUpService = ServicePool.signUpService
+    private lateinit var viewModel: SignUpViewModel
 
-    private lateinit var id: String
-    private lateinit var pw: String
-    private lateinit var name: String
-    private lateinit var skill: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.signUpBtn.setOnClickListener {
-            clickSignUpButton()
+        binding.btnSignUp.isEnabled = false
+        viewModel = SignUpViewModel()
+        binding.viewModel = viewModel
+
+        checkSignUpId()
+        checkSignUpPw()
+        checkBtnState()
+
+        viewModel.signUpResult.observe(this) { signUpResult ->
+            startActivity(
+                Intent(this@SignUpActivity, LoginActivity::class.java)
+            )
         }
 
+        binding.btnSignUp.setOnClickListener {
+            //clickSignUpButton()
+            viewModel.signUp(
+                binding.editTextId.text.toString(),
+                binding.editTextPw.text.toString(),
+                binding.editTextName.text.toString(),
+                binding.editTextSkill.text.toString()
+            )
+        }
+        //키보드 숨기기
         binding.root.setOnClickListener {
             hideKeyboard()
         }
     }
-
-    private fun clickSignUpButton() {
-
-        id = binding.idEditTv.text.toString()
-        pw = binding.pwEditTv.text.toString()
-        name = binding.nameEditTv.text.toString()
-        skill = binding.skillEditText.text.toString()
-
-        val idState = id.length in 6..10
-        val pwState = pw.length in 8..12
-        val nameState = name.isNotEmpty()
-        val skillState = skill.isNotEmpty()
-
-        if (!idState) {
-            makeSnackBar("아이디는 6~10글자 입니다.")
-        } else if (!pwState) {
-            makeSnackBar("비밀번호는 8~12글자 입니다.")
-        } else {
-            if (nameState && skillState) {
-                completeSignUp()
+    private fun checkSignUpId(){
+        viewModel.id.observe(this) {
+            if (viewModel.checkId(it)) {
+                binding.textInputLayoutId.error = null
             } else {
-                makeSnackBar("모든 정보를 입력해주세요.")
+                binding.textInputLayoutId.error = "ID:영문과 숫자가 포함된 6~10글자 이내"
             }
+            viewModel.setButtonState()
         }
     }
-
-    private fun completeSignUp() {
-        signUpService.signUp(
-            RequestSignUpDto(
-                id,
-                pw,
-                name,
-                skill
-            )
-        ).enqueue(object : retrofit2.Callback<ResponseSignUpDto> {
-            override fun onResponse(
-                call: Call<ResponseSignUpDto>,
-                response: Response<ResponseSignUpDto>,
-            ) {
-                Log.e("SignUpActivity", "${response.code()}")
-                //결과 코드가 200의 범위인 경우
-                if (response.isSuccessful) {
-                    Log.e("SignUpActivity", "회원가입에 성공하였습니다.")
-                    makeSnackBar("회원가입에 성공하였습니다.")
-                    val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-
-                    if (!isFinishing) finish()
-                } else {
-                    // 실패한 응답
-                    if (response.code() == 409) {
-                        Log.e("SignUpActivity", "중복된 아이디가 존재합니다.")
-                        makeSnackBar("중복된 아이디가 존재합니다.")
-                    }
-                }
+    private fun checkSignUpPw() {
+        viewModel.pw.observe(this) {
+            if(viewModel.checkPw(it)){
+                binding.textInputLayoutPw.error = null
+            } else {
+                binding.textInputLayoutPw.error = "PW:영문,숫자,특수문자가 포함된 6~12글자 이내"
             }
+            viewModel.setButtonState()
+        }
 
-            override fun onFailure(call: Call<ResponseSignUpDto>, t: Throwable) {
-                // 왜 안 오노
-                t.message?.let { makeSnackBar(it) } ?: "서버통신 실패(응답값 X)"
-            }
-        })
     }
-
+    private fun checkBtnState() {
+        viewModel.btnState.observe(this) {
+            binding.btnSignUp.isEnabled = it
+        }
+    }
 
     private fun makeSnackBar(text: String) {
         Snackbar.make(
