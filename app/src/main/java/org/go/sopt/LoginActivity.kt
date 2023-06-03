@@ -1,6 +1,8 @@
 package org.go.sopt
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -26,6 +28,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var id : String
     private lateinit var pw :String
 
+    //private val loginPrefs = this.getPreferences(Context.MODE_PRIVATE) ?: null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -40,9 +44,11 @@ class LoginActivity : AppCompatActivity() {
         }
         
         binding.loginBtn.setOnClickListener {
-
-//            id = binding.idEditTv.text.toString()
-//            pw = binding.pwEditTv.text.toString()
+//            with(loginPrefs!!.edit()){
+//                putString("ID",binding.idEditTv.text.toString())
+//                putString("PW",binding.pwEditTv.text.toString())
+//                commit()
+//            }
             //completeSignIn()
             viewModel.signIn(
                 binding.idEditTv.text.toString(),
@@ -54,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(
                 Intent(this@LoginActivity, MainActivity::class.java)
             )
+            finish()
         }
     }
 

@@ -1,20 +1,38 @@
 package org.go.sopt
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.seminar1.R
 import com.example.seminar1.databinding.ActivityMainBinding
+import org.go.sopt.util.makeSnackBar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var userName: String? = ""
     private var userSkill: String? = ""
+
+    private var backPressedTime : Long = 0
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if(System.currentTimeMillis() - backPressedTime < 2000) {
+                finish()
+                return
+            }
+
+            binding.root.makeSnackBar("한번 더 누르면 앱이 종료됩니다.")
+            backPressedTime = System.currentTimeMillis()
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        this.onBackPressedDispatcher.addCallback(this, callback)
 
         userName = intent.getStringExtra("userName")
         userSkill = intent.getStringExtra("userSkill")
