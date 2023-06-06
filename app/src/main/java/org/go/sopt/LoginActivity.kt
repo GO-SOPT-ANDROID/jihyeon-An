@@ -3,6 +3,7 @@ package org.go.sopt
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,18 +23,18 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityLoginBinding
-    private val signInService = ServicePool.signInService
     private lateinit var viewModel: SignInViewModel
 
-    private lateinit var id : String
-    private lateinit var pw :String
-
-    //private val loginPrefs = this.getPreferences(Context.MODE_PRIVATE) ?: null
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
 
         viewModel = SignInViewModel()
 
@@ -42,13 +43,9 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
-        
+
+        //로그인 버튼 클릭
         binding.loginBtn.setOnClickListener {
-//            with(loginPrefs!!.edit()){
-//                putString("ID",binding.idEditTv.text.toString())
-//                putString("PW",binding.pwEditTv.text.toString())
-//                commit()
-//            }
             //completeSignIn()
             viewModel.signIn(
                 binding.idEditTv.text.toString(),
@@ -57,44 +54,27 @@ class LoginActivity : AppCompatActivity() {
         }
 
         viewModel.signInResult.observe(this) {signInResult ->
+            editor.putString("id", signInResult.data.id)
+            editor.apply()
+
             startActivity(
                 Intent(this@LoginActivity, MainActivity::class.java)
             )
             finish()
         }
+
+        autoLogin()
     }
 
-    private fun completeSignIn() {
-        signInService.signIn(
-            RequestSignInDto(
-                id,
-                pw
-            )
-        ).enqueue(object: retrofit2.Callback<ResponseSignInDto> {
-            override fun onResponse(
-                call: Call<ResponseSignInDto>,
-                response: Response<ResponseSignInDto>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.message?.let { binding.root.makeSnackBar(it) } ?: "로그인에 성공하였습니다."
-                    Log.e("LoginActivity","로그인에 성공하였습니다")
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        .putExtra("userName", response.body()?.data?.name)
-                        .putExtra("userSkill", response.body()?.data?.skill)
-                    startActivity(intent)
-                    finish()
-
-                } else {
-                    // 실패한 응답
-                    binding.root.makeSnackBar("존재하지 않는 회원입니다.")
-                    Log.e("LoginActivity","40X")
-                }
+    private fun autoLogin(){
+        val autoId = sharedPreferences.getString("id",null)
+        if(autoId != null){
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("id", autoId)
             }
-
-            override fun onFailure(call: Call<ResponseSignInDto>, t: Throwable) {
-                t.message?.let { binding.root.makeSnackBar(it) } ?: "서버통신 실패(응답값 X)"
-                Log.e("LoginActivity",t.toString())
-            }
-        })
+            binding.root.makeSnackBar("자동로그인 되었습니다.")
+            startActivity(intent)
+            finish()
+        }
     }
 }
