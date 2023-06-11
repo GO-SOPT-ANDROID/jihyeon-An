@@ -17,6 +17,10 @@ class GalleryFragment : Fragment() {
     private var _binding: FragmentGalleryBinding? = null
     private val binding: FragmentGalleryBinding
         get() = requireNotNull(_binding) { "앗 ! _binding이 null이다 !" }
+    private lateinit var rvAdapter: GalleryRVAdapter
+    private lateinit var rvHeaderAdapter: GalleryHeaderRVAdapter
+
+    private val items = mutableListOf<GalleryItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,58 +34,45 @@ class GalleryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val items = mutableListOf<GalleryItem>(
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-            GalleryItem(
-                "짱구의 레포지터리",
-                "짱구"
-            ),
-        )
+        initRecyclerView()
+        binding.btnDelete.isEnabled = false
+        clickItem()
+        binding.btnDelete.setOnClickListener {
+            deleteItem()
+        }
+    }
+
+    private fun deleteItem() {
+        val itemList = rvAdapter.getSelectedItemList()
+        items.removeAll(itemList)
+        rvAdapter.submitList(items)
+        binding.rv.adapter = rvAdapter
+    }
+
+    private fun clickItem() {
+        rvAdapter.setOnItemClickListener { response ->
+            binding.btnDelete.isEnabled = rvAdapter.getSelectedItem() > 0
+        }
+    }
+
+    private fun initRecyclerView() {
+        items.add(GalleryItem("짱구의 레포지터리1", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리2", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리3", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리4", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리5", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리6", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리7", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리8", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리9", "짱구"))
+        items.add(GalleryItem("짱구의 레포지터리10", "짱구"))
+
 
         val header = mutableListOf<String>("짱구의 레포지터리")
 
-        val rvAdapter = GalleryRVAdapter()
+        rvAdapter = GalleryRVAdapter()
         rvAdapter.submitList(items)
-        val rvHeaderAdapter = GalleryHeaderRVAdapter()
+        rvHeaderAdapter = GalleryHeaderRVAdapter()
         rvHeaderAdapter.submitList(header)
         val concatAdapter = ConcatAdapter(rvHeaderAdapter, rvAdapter)
         binding.rv.apply {
@@ -90,7 +81,8 @@ class GalleryFragment : Fragment() {
         }
     }
 
-    fun scrollToTop(){
+
+    fun scrollToTop() {
         binding.rv.scrollToPosition(0)
     }
 
