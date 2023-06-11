@@ -1,6 +1,7 @@
 package org.go.sopt
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +16,10 @@ class MainActivity : AppCompatActivity() {
     private var userName: String? = ""
     private var userSkill: String? = ""
 
-    private var backPressedTime : Long = 0
+    private var backPressedTime: Long = 0
     private val callback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if(System.currentTimeMillis() - backPressedTime < 2000) {
+            if (System.currentTimeMillis() - backPressedTime < 2000) {
                 finish()
                 return
             }
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             backPressedTime = System.currentTimeMillis()
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -42,8 +44,19 @@ class MainActivity : AppCompatActivity() {
 
         changeFragment(HomeFragment())
 
-        binding.mainBtn.setOnItemSelectedListener { item ->
+        binding.mainBtn.setOnItemReselectedListener { item ->
 
+            if (item.itemId == R.id.main_gallery) {
+                val currentFragment =
+                    supportFragmentManager.findFragmentById(R.id.main_fragment_container)
+                if (currentFragment is GalleryFragment) {
+                    currentFragment.scrollToTop()
+                }
+            }
+        }
+
+        //bottomNavigation 클릭 이벤트
+        binding.mainBtn.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_home -> {
                     changeFragment(HomeFragment())

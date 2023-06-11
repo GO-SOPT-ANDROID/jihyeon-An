@@ -51,6 +51,30 @@ class GalleryFragment : Fragment() {
                 "짱구의 레포지터리",
                 "짱구"
             ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
+            GalleryItem(
+                "짱구의 레포지터리",
+                "짱구"
+            ),
         )
 
         val header = mutableListOf<String>("짱구의 레포지터리")
@@ -64,6 +88,10 @@ class GalleryFragment : Fragment() {
             adapter = concatAdapter
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    fun scrollToTop(){
+        binding.rv.scrollToPosition(0)
     }
 
     override fun onDestroy() {
