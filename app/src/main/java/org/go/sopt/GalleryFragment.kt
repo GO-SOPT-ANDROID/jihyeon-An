@@ -21,6 +21,7 @@ class GalleryFragment : Fragment() {
     private lateinit var rvHeaderAdapter: GalleryHeaderRVAdapter
 
     private val items = mutableListOf<GalleryItem>()
+    private val header = mutableListOf("짱구의 레포지터리")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,8 +46,8 @@ class GalleryFragment : Fragment() {
     private fun deleteItem() {
         val itemList = rvAdapter.getSelectedItemList()
         items.removeAll(itemList)
-        rvAdapter.submitList(items)
-        binding.rv.adapter = rvAdapter
+        setAdapter()
+
     }
 
     private fun clickItem() {
@@ -67,9 +68,10 @@ class GalleryFragment : Fragment() {
         items.add(GalleryItem("짱구의 레포지터리9", "짱구"))
         items.add(GalleryItem("짱구의 레포지터리10", "짱구"))
 
+        setAdapter()
+    }
 
-        val header = mutableListOf<String>("짱구의 레포지터리")
-
+    private fun setAdapter(){
         rvAdapter = GalleryRVAdapter()
         rvAdapter.submitList(items)
         rvHeaderAdapter = GalleryHeaderRVAdapter()
