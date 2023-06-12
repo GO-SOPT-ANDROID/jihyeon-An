@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/crayon_repo"
         android:textSize="20sp"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnBackground"
         android:textStyle="bold"
         android:padding="10dp"
         android:gravity="center"

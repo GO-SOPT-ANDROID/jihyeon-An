@@ -8,5 +8,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="yellow">#FFF7B3</color>
+    <color name="dark_yellow">#FFE500</color>
     <color name="green">#9BB67C</color>
+    <color name="dark_green">#027807</color>
+    <color name="gray_10">#F2F2F2</color>
+    <color name="gray_20">#E6E6E6</color>
+    <color name="gray_30">#CCCCCC</color>
+    <color name="gray_40">#B3B3B3</color>
+    <color name="gray_50">#999999</color>
+    <color name="gray_60">#808080</color>
 </resources>
