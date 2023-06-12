@@ -10,7 +10,9 @@ import com.example.seminar1.databinding.ActivityLoginBinding
 import com.google.android.material.snackbar.Snackbar
 import org.go.sopt.model.RequestSignInDto
 import org.go.sopt.model.ResponseSignInDto
+import org.go.sopt.network.SignInService
 import org.go.sopt.network.SignUpService
+import org.go.sopt.viewmodel.SignInViewModel
 import retrofit2.Call
 import retrofit2.Response
 
@@ -18,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityLoginBinding
     private val signInService = ServicePool.signInService
+    private lateinit var viewModel: SignInViewModel
 
     private lateinit var id : String
     private lateinit var pw :String
@@ -27,6 +30,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = SignInViewModel()
+
         //회원가입 화면으로 이동
         binding.signUpBtn.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
@@ -35,10 +40,19 @@ class LoginActivity : AppCompatActivity() {
         
         binding.loginBtn.setOnClickListener {
 
-            id = binding.idEditTv.text.toString()
-            pw = binding.pwEditTv.text.toString()
+//            id = binding.idEditTv.text.toString()
+//            pw = binding.pwEditTv.text.toString()
+            //completeSignIn()
+            viewModel.signIn(
+                binding.idEditTv.text.toString(),
+                binding.pwEditTv.text.toString()
+            )
+        }
 
-            completeSignIn()
+        viewModel.signInResult.observe(this) {signInResult ->
+            startActivity(
+                Intent(this@LoginActivity, MainActivity::class.java)
+            )
         }
     }
     private fun completeSignIn() {
