@@ -21,10 +21,12 @@
             android:name="org.go.sopt.MainActivity"
             android:exported="false" />
         <activity
-            android:name="org.go.sopt.LoginActivity"
+            android:name="org.go.sopt.SignUpActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
-            android:name="org.go.sopt.SignUpActivity"
+            android:name="org.go.sopt.LoginActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
