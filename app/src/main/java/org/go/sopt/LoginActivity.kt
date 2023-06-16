@@ -1,6 +1,9 @@
 package org.go.sopt
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -12,23 +15,30 @@ import org.go.sopt.model.RequestSignInDto
 import org.go.sopt.model.ResponseSignInDto
 import org.go.sopt.network.SignInService
 import org.go.sopt.network.SignUpService
+import org.go.sopt.util.makeSnackBar
 import org.go.sopt.viewmodel.SignInViewModel
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.math.sign
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityLoginBinding
-    private val signInService = ServicePool.signInService
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: SignInViewModel
 
-    private lateinit var id : String
-    private lateinit var pw :String
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+    private var userName: String? = ""
+    private var userSkill: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
 
         viewModel = SignInViewModel()
 
@@ -37,11 +47,9 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
-        
-        binding.loginBtn.setOnClickListener {
 
-//            id = binding.idEditTv.text.toString()
-//            pw = binding.pwEditTv.text.toString()
+        //로그인 버튼 클릭
+        binding.loginBtn.setOnClickListener {
             //completeSignIn()
             viewModel.signIn(
                 binding.idEditTv.text.toString(),
@@ -49,52 +57,35 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
-        viewModel.signInResult.observe(this) {signInResult ->
-            startActivity(
-                Intent(this@LoginActivity, MainActivity::class.java)
-            )
+        viewModel.signInResult.observe(this) { signInResult ->
+            editor.putString("id", signInResult.data.id)
+            editor.putString("userName", signInResult.data.name)
+            editor.putString("userSkill", signInResult.data.skill)
+            editor.apply()
+
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.putExtra("userName", signInResult.data.name)
+            intent.putExtra("userSkill", signInResult.data.skill)
+            startActivity(intent)
+            finish()
+        }
+
+        autoLogin()
+    }
+
+    private fun autoLogin() {
+        val autoId = sharedPreferences.getString("id", null)
+        userName = sharedPreferences.getString("userName", userName)
+        userSkill = sharedPreferences.getString("userSkill", userSkill)
+        if (autoId != null) {
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("id", autoId)
+                putExtra("userName", userName)
+                putExtra("userSkill", userSkill)
+            }
+            binding.root.makeSnackBar("자동로그인 되었습니다.")
+            startActivity(intent)
+            finish()
         }
     }
-    private fun completeSignIn() {
-        signInService.signIn(
-            RequestSignInDto(
-                id,
-                pw
-            )
-        ).enqueue(object: retrofit2.Callback<ResponseSignInDto> {
-            override fun onResponse(
-                call: Call<ResponseSignInDto>,
-                response: Response<ResponseSignInDto>
-            ) {
-                if (response.isSuccessful) {
-                    response.body()?.message?.let { makeSnackBar(it) } ?: "로그인에 성공하였습니다."
-                    Log.e("LoginActivity","로그인에 성공하였습니다")
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        .putExtra("userName", response.body()?.data?.name)
-                        .putExtra("userSkill", response.body()?.data?.skill)
-                    startActivity(intent)
-                    finish()
-
-                } else {
-                    // 실패한 응답
-                    makeSnackBar("존재하지 않는 회원입니다.")
-                    Log.e("LoginActivity","40X")
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseSignInDto>, t: Throwable) {
-                t.message?.let { makeSnackBar(it) } ?: "서버통신 실패(응답값 X)"
-                Log.e("LoginActivity",t.toString())
-            }
-        })
-    }
-
-    private fun makeSnackBar(text: String) {
-        Snackbar.make(
-            binding.root,
-            text,
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
-
 }

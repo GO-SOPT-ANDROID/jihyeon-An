@@ -13,6 +13,8 @@ import retrofit2.Response
 class SignInViewModel : ViewModel() {
     val signInResult: MutableLiveData<ResponseSignInDto> = MutableLiveData()
 
+    val id = MutableLiveData<String>()
+    val pw = MutableLiveData<String>()
     fun signIn(id: String, password: String) {
         signInService.signIn(
             RequestSignInDto(

@@ -11,6 +11,7 @@ import com.example.seminar1.databinding.ActivitySignUpBinding
 import com.google.android.material.snackbar.Snackbar
 import org.go.sopt.model.RequestSignUpDto
 import org.go.sopt.model.ResponseSignUpDto
+import org.go.sopt.util.hideKeyBoard
 import org.go.sopt.viewmodel.SignUpViewModel
 import retrofit2.Call
 import retrofit2.Response
@@ -34,9 +35,8 @@ class SignUpActivity : AppCompatActivity() {
         checkBtnState()
 
         viewModel.signUpResult.observe(this) { signUpResult ->
-            startActivity(
-                Intent(this@SignUpActivity, LoginActivity::class.java)
-            )
+            val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
+            startActivity(intent)
         }
 
         binding.btnSignUp.setOnClickListener {
@@ -50,7 +50,7 @@ class SignUpActivity : AppCompatActivity() {
         }
         //키보드 숨기기
         binding.root.setOnClickListener {
-            hideKeyboard()
+            hideKeyBoard(it)
         }
     }
     private fun checkSignUpId(){
@@ -77,25 +77,6 @@ class SignUpActivity : AppCompatActivity() {
     private fun checkBtnState() {
         viewModel.btnState.observe(this) {
             binding.btnSignUp.isEnabled = it
-        }
-    }
-
-    private fun makeSnackBar(text: String) {
-        Snackbar.make(
-            binding.root,
-            text,
-            Snackbar.LENGTH_SHORT
-        ).show()
-    }
-
-    private fun hideKeyboard() {
-        if (this.currentFocus != null) {
-            val inputManager: InputMethodManager =
-                this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputManager.hideSoftInputFromWindow(
-                this.currentFocus?.windowToken,
-                InputMethodManager.HIDE_NOT_ALWAYS
-            )
         }
     }
 }

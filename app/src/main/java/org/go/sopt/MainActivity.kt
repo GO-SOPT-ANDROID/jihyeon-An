@@ -1,31 +1,69 @@
 package org.go.sopt
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.seminar1.R
 import com.example.seminar1.databinding.ActivityMainBinding
+import org.go.sopt.util.makeSnackBar
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var userName: String? = ""
     private var userSkill: String? = ""
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+    private var backPressedTime: Long = 0
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            if (System.currentTimeMillis() - backPressedTime < 2000) {
+                finish()
+                return
+            }
+
+            binding.root.makeSnackBar("한번 더 누르면 앱이 종료됩니다.")
+            backPressedTime = System.currentTimeMillis()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        this.onBackPressedDispatcher.addCallback(this, callback)
+
         userName = intent.getStringExtra("userName")
         userSkill = intent.getStringExtra("userSkill")
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString("userName", userName)
         bundle.putString("userSkill", userSkill)
+        Log.e("MainActicity", "userName: ${userName.toString()}")
+        Log.e("MainActicity", "userName: ${userSkill.toString()}")
 
         changeFragment(HomeFragment())
 
-        binding.mainBtn.setOnItemSelectedListener { item ->
+        binding.mainBtn.setOnItemReselectedListener { item ->
 
+            if (item.itemId == R.id.main_gallery) {
+                val currentFragment =
+                    supportFragmentManager.findFragmentById(R.id.main_fragment_container)
+                if (currentFragment is GalleryFragment) {
+                    currentFragment.scrollToTop()
+                }
+            }
+        }
+
+        //bottomNavigation 클릭 이벤트
+        binding.mainBtn.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.main_home -> {
                     changeFragment(HomeFragment())
@@ -44,6 +82,17 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    fun deleteAutoLogin(){
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+
+        editor.clear()
+        editor.commit()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun changeFragment(fragment: Fragment) {
