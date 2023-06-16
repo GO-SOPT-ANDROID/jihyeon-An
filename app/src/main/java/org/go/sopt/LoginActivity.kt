@@ -19,14 +19,18 @@ import org.go.sopt.util.makeSnackBar
 import org.go.sopt.viewmodel.SignInViewModel
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.math.sign
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityLoginBinding
+    private lateinit var binding: ActivityLoginBinding
     private lateinit var viewModel: SignInViewModel
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+
+    private var userName: String? = ""
+    private var userSkill: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,24 +57,31 @@ class LoginActivity : AppCompatActivity() {
             )
         }
 
-        viewModel.signInResult.observe(this) {signInResult ->
+        viewModel.signInResult.observe(this) { signInResult ->
             editor.putString("id", signInResult.data.id)
+            editor.putString("userName", signInResult.data.name)
+            editor.putString("userSkill", signInResult.data.skill)
             editor.apply()
 
-            startActivity(
-                Intent(this@LoginActivity, MainActivity::class.java)
-            )
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.putExtra("userName", signInResult.data.name)
+            intent.putExtra("userSkill", signInResult.data.skill)
+            startActivity(intent)
             finish()
         }
 
         autoLogin()
     }
 
-    private fun autoLogin(){
-        val autoId = sharedPreferences.getString("id",null)
-        if(autoId != null){
+    private fun autoLogin() {
+        val autoId = sharedPreferences.getString("id", null)
+        userName = sharedPreferences.getString("userName", userName)
+        userSkill = sharedPreferences.getString("userSkill", userSkill)
+        if (autoId != null) {
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra("id", autoId)
+                putExtra("userName", userName)
+                putExtra("userSkill", userSkill)
             }
             binding.root.makeSnackBar("자동로그인 되었습니다.")
             startActivity(intent)

@@ -1,40 +1,32 @@
 package org.go.sopt
 
+import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import com.example.seminar1.R
 import com.example.seminar1.databinding.FragmentMyPageBinding
 import com.google.android.material.snackbar.Snackbar
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [MyPageFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class MyPageFragment : Fragment() {
 
     private var _binding : FragmentMyPageBinding? = null
     private val binding : FragmentMyPageBinding
         get() = requireNotNull(_binding) { "앗 ! _binding이 null이다 !" }
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var userName: String? = ""
+    private var userSkill: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        userName = arguments?.getString("userName")
+        userSkill = arguments?.getString("userSkill")
+        Log.e("userName", userName.toString())
+        Log.e("userSkill", userSkill.toString())
     }
 
     override fun onCreateView(
@@ -49,35 +41,31 @@ class MyPageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userName = arguments?.getString("userName")
-        val userSkill = arguments?.getString("userSkill")
-
+        //사용자 정보 설정
         binding.nameTv.text = "NAME : $userName"
         binding.talentTv.text = "SKILL : $userSkill"
-
+        //
+        clickLogoutBtn()
     }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyPageFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyPageFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+    private fun clickLogoutBtn() {
+        binding.btnLogout.setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+            dialog.apply {
+                setMessage("로그아웃 하시겠습니까?")
+                setPositiveButton("확인",
+                DialogInterface.OnClickListener { dialogInterface, i ->
+                    (activity as MainActivity).deleteAutoLogin()
+                })
+                setNegativeButton("취소",null)
             }
+            dialog.show()
+        }
     }
+
+
 }

@@ -1,5 +1,7 @@
 package org.go.sopt
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -15,6 +17,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var userName: String? = ""
     private var userSkill: String? = ""
+
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     private var backPressedTime: Long = 0
     private val callback = object : OnBackPressedCallback(true) {
@@ -38,9 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         userName = intent.getStringExtra("userName")
         userSkill = intent.getStringExtra("userSkill")
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putString("userName", userName)
         bundle.putString("userSkill", userSkill)
+        Log.e("MainActicity", "userName: ${userName.toString()}")
+        Log.e("MainActicity", "userName: ${userSkill.toString()}")
 
         changeFragment(HomeFragment())
 
@@ -75,6 +82,17 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    fun deleteAutoLogin(){
+        sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+
+        editor.clear()
+        editor.commit()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun changeFragment(fragment: Fragment) {

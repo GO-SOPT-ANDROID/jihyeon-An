@@ -35,9 +35,8 @@ class SignUpActivity : AppCompatActivity() {
         checkBtnState()
 
         viewModel.signUpResult.observe(this) { signUpResult ->
-            startActivity(
-                Intent(this@SignUpActivity, LoginActivity::class.java)
-            )
+            val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
+            startActivity(intent)
         }
 
         binding.btnSignUp.setOnClickListener {
